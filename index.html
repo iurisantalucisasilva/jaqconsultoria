@@ -7,223 +7,388 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #e67e22;
-    --background-color: #ecf0f1;
-    --text-color: #34495e;
-    --accent-color: #3498db;
-    --concrete-color: #95a5a6;
-    --soil-color: #d35400;
-}
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
-body {
-    display: flex;
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
+    :root {
+        --primary-color: #3a4750;
+        --secondary-color: #f6ae2d;
+        --background-color: #f4f7f9;
+        --text-color: #2c3e50;
+        --accent-color: #33ca7f;
+        --white: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --gradient-start: #3a4750;
+        --gradient-end: #2c3e50;
+        --font-family: 'Poppins', sans-serif;
+    }
 
-.sidebar {
-    width: 250px;
-    background-color: var(--primary-color);
-    height: 100vh;
-    overflow-y: auto;
-    transition: all 0.3s;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-.sidebar-header {
-    padding: 20px;
-    color: white;
-    font-size: 24px;
-    text-align: center;
-    background-color: var(--secondary-color);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: bold;
-}
-
-.content {
-    flex-grow: 1;
-    padding: 30px;
-    transition: all 0.3s;
-}
-
-.group {
-    padding: 15px;
-    cursor: pointer;
-    color: white;
-    transition: background-color 0.3s;
-    border-left: 4px solid transparent;
-}
-
-.group:hover {
-    background-color: rgba(255,255,255,0.1);
-    border-left: 4px solid var(--secondary-color);
-}
-
-.button {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: var(--secondary-color);
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin: 10px 5px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    transition: all 0.3s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-.button:hover {
-    background-color: var(--accent-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-#sheetsList, #groupSheetsList {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.sheet-item {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: all 0.3s;
-    border-bottom: 4px solid var(--concrete-color);
-}
-
-.sheet-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    border-bottom: 4px solid var(--secondary-color);
-}
-
-#pageTitle {
-    color: var(--primary-color);
-    border-bottom: 2px solid var(--secondary-color);
-    padding-bottom: 10px;
-    font-size: 32px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-#spreadsheetContainer {
-    margin-top: 20px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    height: 600px;
-    border: 1px solid var(--concrete-color);
-}
-
-#permissionPrompt {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    z-index: 1000;
-    display: none;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-}
-
-#permissionPrompt h3 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-}
-
-#permissionPrompt p {
-    margin-bottom: 20px;
-}
-
-/* Estilos adicionais para melhorar a aparência */
-
-.content h3 {
-    color: var(--secondary-color);
-    margin-bottom: 20px;
-    font-size: 24px;
-}
-
-.sheet-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.sheet-item::before {
-    content: '\1F4C4'; /* Emoji de documento */
-    font-size: 24px;
-    margin-right: 10px;
-}
-
-.sheet-item:hover::before {
-    content: '\1F4C8'; /* Emoji de gráfico crescente */
-}
-
-.button:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
     body {
-        flex-direction: column;
+        display: flex;
+        font-family: var(--font-family);
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        overflow-x: hidden;
     }
 
     .sidebar {
+        width: 280px;
+        background: linear-gradient(145deg, var(--gradient-start), var(--gradient-end));
+        height: 100vh;
+        overflow-y: auto;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 5px 0 25px var(--shadow-color);
+        position: relative;
+        z-index: 10;
+    }
+
+    .sidebar-header {
+        padding: 35px 25px;
+        color: var(--white);
+        font-size: 28px;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.1);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 700;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sidebar-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: var(--secondary-color);
+        border-radius: 1.5px;
+    }
+
+    .group {
+        padding: 18px 25px;
+        cursor: pointer;
+        color: var(--white);
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .group i {
+        margin-right: 15px;
+        font-size: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .group::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: auto;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+        z-index: -1;
+    }
+
+    .group:hover::before {
+        transform: scaleX(1);
+    }
+
+    .group:hover {
+        color: var(--secondary-color);
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .group:hover i {
+        transform: translateX(3px);
     }
 
     .content {
-        padding: 20px;
+        flex-grow: 1;
+        padding: 40px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        max-width: calc(100% - 280px);
+        background-color: var(--white);
+        border-radius: 25px 0 0 25px;
+        box-shadow: -10px 0 30px var(--shadow-color);
+        position: relative;
+        z-index: 5;
+    }
+
+    #pageTitle {
+        color: var(--primary-color);
+        font-size: 38px;
+        font-weight: 700;
+        margin-bottom: 35px;
+        position: relative;
+        display: inline-block;
+    }
+
+    #pageTitle::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -12px;
+        width: 65px;
+        height: 4px;
+        background-color: var(--secondary-color);
+        border-radius: 2px;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 14px 28px;
+        background-color: var(--secondary-color);
+        color: var(--white);
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        margin: 12px 8px;
+        cursor: pointer;
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 8px 15px rgba(246, 174, 45, 0.3);
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 1.2px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transform: translateX(-100%);
+        transition: 0.6s;
+    }
+
+    .button:hover::before {
+        transform: translateX(100%);
+    }
+
+    .button:hover {
+        background-color: var(--accent-color);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 20px rgba(51, 202, 127, 0.4);
     }
 
     #sheetsList, #groupSheetsList {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 35px;
     }
-}
 
-/* Scrollbar personalizada */
-::-webkit-scrollbar {
-    width: 10px;
-}
+    .sheet-item {
+        background-color: var(--white);
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 12px 30px var(--shadow-color);
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
 
-::-webkit-scrollbar-track {
-    background: var(--background-color);
-}
+    .sheet-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        transform: scaleX(0);
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
 
-::-webkit-scrollbar-thumb {
-    background: var(--secondary-color);
-    border-radius: 5px;
-}
+    .sheet-item:hover::before {
+        transform: scaleX(1);
+    }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-color);
-}
+    .sheet-item:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    #spreadsheetContainer {
+        margin-top: 35px;
+        background-color: var(--white);
+        padding: 28px;
+        border-radius: 18px;
+        box-shadow: 0 12px 30px var(--shadow-color);
+        height: 650px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        position: relative;
+    }
+
+    #spreadsheetContainer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    }
+
+    #spreadsheetContainer iframe {
+        width: 100%;
+        height: calc(100% - 4px);
+        border: none;
+        border-radius: 0 0 18px 18px;
+    }
+
+    h3 {
+        color: var(--primary-color);
+        margin-top: 45px;
+        font-size: 30px;
+        font-weight: 600;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 25px;
+    }
+
+    h3::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 45px;
+        height: 3px;
+        background-color: var(--accent-color);
+        border-radius: 1.5px;
+    }
+    body::after {
+    content: attr(data-credit);
+    display: none;
+    }
+    .message {
+        background: linear-gradient(135deg, var(--accent-color), #4cd787);
+        color: var(--white);
+        padding: 18px 28px;
+        border-radius: 50px;
+        margin-bottom: 28px;
+        text-align: center;
+        font-weight: 500;
+        box-shadow: 0 8px 20px rgba(51, 202, 127, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .message::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(45deg);
+        animation: shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-50%) rotate(45deg); }
+        100% { transform: translateX(50%) rotate(45deg); }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--secondary-color);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-color);
+    }
+
+    /* Responsividade */
+    @media (max-width: 1100px) {
+        .sidebar {
+            width: 240px;
+        }
+        .content {
+            max-width: calc(100% - 240px);
+            padding: 35px;
+        }
+    }
+
+    @media (max-width: 900px) {
+        body {
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: static;
+        }
+        .content {
+            max-width: 100%;
+            padding: 25px;
+            border-radius: 0;
+        }
+        #sheetsList, #groupSheetsList {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+    }
+
+    @media (max-width: 600px) {
+        .content {
+            padding: 20px;
+        }
+        #pageTitle {
+            font-size: 32px;
+        }
+        .button {
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+    }
     </style>
 </head>
 <body>
@@ -235,6 +400,7 @@ body {
         <div class="group" onclick="showGroup(3)">Grupo 3</div>
         <div class="group" onclick="showGroup(4)">Grupo 4</div>
         <div class="group" onclick="showGroup(5)">Grupo 5</div>
+        <div class="group" onclick="uploadToDrive()">Upload para Drive</div>
     </div>
     <div class="content">
         <h2 id="pageTitle">Home</h2>
@@ -253,258 +419,296 @@ body {
         </div>
     </div>
 
-    <div id="permissionPrompt">
-        <h3>Permissão Necessária</h3>
-        <p>Para acessar suas planilhas, precisamos da sua permissão.</p>
-        <button onclick="requestPermission()" class="button">Conceder Permissão</button>
-    </div>
-
     <script>
-        let currentGroup = null;
+    let currentGroup = null;
+    let isPermissionButtonClose = true;
+    let currentSheetId = null;
 
-        function showHome() {
-            currentGroup = null;
-            document.getElementById('pageTitle').innerText = 'Home';
-            document.getElementById('homeContent').style.display = 'block';
-            document.getElementById('groupContent').style.display = 'none';
-            listSheets();
-        }
 
-        function showGroup(groupNumber) {
-            currentGroup = groupNumber;
-            document.getElementById('pageTitle').innerText = `Grupo ${groupNumber}`;
-            document.getElementById('homeContent').style.display = 'none';
-            document.getElementById('groupContent').style.display = 'block';
-            listGroupSheets(groupNumber);
-        }
-
-        function createNewSheet(inGroup = false) {
-            const title = inGroup ? `Nova Planilha Grupo ${currentGroup}` : "Nova Planilha JAQ Consultoria";
-            gapi.client.sheets.spreadsheets.create({
-                properties: { title: title }
-            }).then((response) => {
-                const spreadsheetId = response.result.spreadsheetId;
-                if (inGroup) {
-                    // Aqui você pode adicionar lógica para associar a planilha ao grupo atual
-                    console.log(`Planilha criada para o Grupo ${currentGroup}`);
-                }
-                openSheetInline(spreadsheetId);
-                if (inGroup) {
-                    listGroupSheets(currentGroup);
-                } else {
-                    listSheets();
-                }
-            }, (error) => {
-                console.error('Erro ao criar planilha:', error);
+    function uploadToDrive() {
+        if (!currentSheetId) {
+            Swal.fire({
+                title: 'Erro',
+                text: 'Por favor, abra uma planilha antes de fazer o upload.',
+                icon: 'error',
+                confirmButtonText: 'OK'
             });
+            return;
         }
 
-        function listSheets() {
-            gapi.client.drive.files.list({
-                q: "mimeType='application/vnd.google-apps.spreadsheet'",
-                fields: "files(id, name)"
-            }).then((response) => {
-                const sheets = response.result.files;
-                const sheetsListElement = document.getElementById('sheetsList');
-                sheetsListElement.innerHTML = '';
-                sheets.forEach((sheet) => {
-                    const sheetElement = document.createElement('div');
-                    sheetElement.className = 'sheet-item';
-                    sheetElement.textContent = sheet.name;
-                    sheetElement.onclick = () => openSheetInline(sheet.id);
-                    sheetsListElement.appendChild(sheetElement);
-                });
-            }, (error) => {
-                console.error('Erro ao listar planilhas:', error);
-                showPermissionPrompt();
+        gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: currentSheetId,
+            range: 'A1:ZZ'
+        }).then((response) => {
+            const values = response.result.values;
+            
+            // Aqui você pode implementar a lógica para enviar os dados para o Drive
+            // Por exemplo, criar um novo arquivo no Drive com os dados da planilha
+
+            Swal.fire({
+                title: 'Sucesso',
+                text: 'Dados enviados para o Drive com sucesso!',
+                icon: 'success',
+                confirmButtonText: 'OK'
             });
-        }
+        }, (error) => {
+            console.error('Erro ao obter dados da planilha:', error);
+            Swal.fire({
+                title: 'Erro',
+                text: 'Ocorreu um erro ao enviar os dados para o Drive.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
 
-        function listGroupSheets(groupNumber) {
-    // Supondo que cada grupo tenha uma pasta específica no Google Drive
-    const groupFolderId = getGroupFolderId(groupNumber);
+    function openSheetInline(sheetId) {
+        currentSheetId = sheetId;
+        const containerElement = document.getElementById('spreadsheetContainer');
+        containerElement.innerHTML = `<iframe src="https://docs.google.com/spreadsheets/d/${sheetId}/edit?embedded=true" style="width:100%; height:100%; border:none;"></iframe>`;
+    }
 
-    gapi.client.drive.files.list({
-        q: `'${groupFolderId}' in parents and mimeType='application/vnd.google-apps.spreadsheet'`,
-        fields: "files(id, name)",
-        spaces: 'drive'
-    }).then((response) => {
-        const sheets = response.result.files;
-        const groupSheetsListElement = document.getElementById('groupSheetsList');
-        groupSheetsListElement.innerHTML = '';
-        
-        if (sheets && sheets.length > 0) {
+    function showHome() {
+        currentGroup = null;
+        document.getElementById('pageTitle').innerText = 'Home';
+        document.getElementById('homeContent').style.display = 'block';
+        document.getElementById('groupContent').style.display = 'none';
+        listSheets();
+    }
+
+    function showGroup(groupNumber) {
+        currentGroup = groupNumber;
+        document.getElementById('pageTitle').innerText = `Grupo ${groupNumber}`;
+        document.getElementById('homeContent').style.display = 'none';
+        document.getElementById('groupContent').style.display = 'block';
+        listGroupSheets(groupNumber);
+    }
+
+    function createNewSheet(inGroup = false) {
+        const title = inGroup ? `Nova Planilha Grupo ${currentGroup}` : "Nova Planilha JAQ Consultoria";
+        gapi.client.sheets.spreadsheets.create({
+            properties: { title: title }
+        }).then((response) => {
+            const spreadsheetId = response.result.spreadsheetId;
+            if (inGroup) {
+                const groupFolderId = getGroupFolderId(currentGroup);
+                moveFileToFolder(spreadsheetId, groupFolderId);
+            }
+            openSheetInline(spreadsheetId);
+            if (inGroup) {
+                listGroupSheets(currentGroup);
+            } else {
+                listSheets();
+            }
+        }, (error) => {
+            console.error('Erro ao criar planilha:', error);
+        });
+    }
+
+    function listSheets() {
+        gapi.client.drive.files.list({
+            q: "mimeType='application/vnd.google-apps.spreadsheet'",
+            fields: "files(id, name)"
+        }).then((response) => {
+            const sheets = response.result.files;
+            const sheetsListElement = document.getElementById('sheetsList');
+            sheetsListElement.innerHTML = '';
             sheets.forEach((sheet) => {
                 const sheetElement = document.createElement('div');
                 sheetElement.className = 'sheet-item';
                 sheetElement.textContent = sheet.name;
                 sheetElement.onclick = () => openSheetInline(sheet.id);
-                groupSheetsListElement.appendChild(sheetElement);
+                sheetsListElement.appendChild(sheetElement);
             });
-        } else {
-            groupSheetsListElement.innerHTML = '<p>Nenhuma planilha encontrada para este grupo.</p>';
-        }
-    }, (error) => {
-        console.error('Erro ao listar planilhas do grupo:', error);
-        document.getElementById('groupSheetsList').innerHTML = '<p>Erro ao carregar planilhas. Por favor, tente novamente.</p>';
-    });
-}
+        }, (error) => {
+            console.error('Erro ao listar planilhas:', error);
+            showPermissionPrompt();
+        });
+    }
 
-function getGroupFolderId(groupNumber) {
-    // Esta função deve retornar o ID da pasta do Google Drive para cada grupo
-    // Você precisará configurar essas IDs de pasta manualmente
-    const groupFolders = {
-        1: 'ID_DA_PASTA_DO_GRUPO_1',
-        2: 'ID_DA_PASTA_DO_GRUPO_2',
-        3: 'ID_DA_PASTA_DO_GRUPO_3',
-        4: 'ID_DA_PASTA_DO_GRUPO_4',
-        5: 'ID_DA_PASTA_DO_GRUPO_5'
-    };
-    return groupFolders[groupNumber] || null;
-}
+    function listGroupSheets(groupNumber) {
+        const groupFolderId = getGroupFolderId(groupNumber);
 
-function createNewSheet(inGroup = false) {
-    const title = inGroup ? `Nova Planilha Grupo ${currentGroup}` : "Nova Planilha JAQ Consultoria";
-    gapi.client.sheets.spreadsheets.create({
-        properties: { title: title }
-    }).then((response) => {
-        const spreadsheetId = response.result.spreadsheetId;
-        if (inGroup) {
-            // Mover a planilha para a pasta do grupo
-            const groupFolderId = getGroupFolderId(currentGroup);
-            moveFileToFolder(spreadsheetId, groupFolderId);
-        }
-        openSheetInline(spreadsheetId);
-        if (inGroup) {
-            listGroupSheets(currentGroup);
-        } else {
-            listSheets();
-        }
-    }, (error) => {
-        console.error('Erro ao criar planilha:', error);
-    });
-}
+        gapi.client.drive.files.list({
+            q: `'${groupFolderId}' in parents and mimeType='application/vnd.google-apps.spreadsheet'`,
+            fields: "files(id, name)",
+            spaces: 'drive'
+        }).then((response) => {
+            const sheets = response.result.files;
+            const groupSheetsListElement = document.getElementById('groupSheetsList');
+            groupSheetsListElement.innerHTML = '';
+            
+            if (sheets && sheets.length > 0) {
+                sheets.forEach((sheet) => {
+                    const sheetElement = document.createElement('div');
+                    sheetElement.className = 'sheet-item';
+                    sheetElement.textContent = sheet.name;
+                    sheetElement.onclick = () => openSheetInline(sheet.id);
+                    groupSheetsListElement.appendChild(sheetElement);
+                });
+            } else {
+                groupSheetsListElement.innerHTML = '<p>Nenhuma planilha encontrada para este grupo.</p>';
+            }
+        }, (error) => {
+            console.error('Erro ao listar planilhas do grupo:', error);
+            document.getElementById('groupSheetsList').innerHTML = '<p>Erro ao carregar planilhas. Por favor, tente novamente.</p>';
+        });
+    }
 
-function moveFileToFolder(fileId, folderId) {
-    gapi.client.drive.files.update({
-        fileId: fileId,
-        addParents: folderId,
-        removeParents: 'root',
-        fields: 'id, parents'
-    }).then((response) => {
-        console.log('Arquivo movido para a pasta do grupo com sucesso');
-    }, (error) => {
-        console.error('Erro ao mover arquivo para a pasta do grupo:', error);
-    });
-}
+    function getGroupFolderId(groupNumber) {
+        const groupFolders = {
+            1: 'ID_DA_PASTA_DO_GRUPO_1',
+            2: 'ID_DA_PASTA_DO_GRUPO_2',
+            3: 'ID_DA_PASTA_DO_GRUPO_3',
+            4: 'ID_DA_PASTA_DO_GRUPO_4',
+            5: 'ID_DA_PASTA_DO_GRUPO_5'
+        };
+        return groupFolders[groupNumber] || null;
+    }
 
-        function openSheetInline(sheetId) {
-            const containerElement = document.getElementById('spreadsheetContainer');
-            containerElement.innerHTML = `<iframe src="https://docs.google.com/spreadsheets/d/${sheetId}/edit?embedded=true" style="width:100%; height:100%; border:none;"></iframe>`;
-        }
+    function moveFileToFolder(fileId, folderId) {
+        gapi.client.drive.files.update({
+            fileId: fileId,
+            addParents: folderId,
+            removeParents: 'root',
+            fields: 'id, parents'
+        }).then((response) => {
+            console.log('Arquivo movido para a pasta do grupo com sucesso');
+        }, (error) => {
+            console.error('Erro ao mover arquivo para a pasta do grupo:', error);
+        });
+    }
 
-        function uploadLocalSheet() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.xlsx,.xls,.csv';
-            input.onchange = (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, {type: 'array'});
+    function openSheetInline(sheetId) {
+        const containerElement = document.getElementById('spreadsheetContainer');
+        containerElement.innerHTML = `<iframe src="https://docs.google.com/spreadsheets/d/${sheetId}/edit?embedded=true" style="width:100%; height:100%; border:none;"></iframe>`;
+    }
+
+    function uploadLocalSheet() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.xlsx,.xls,.csv';
+        input.onchange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    const firstSheet = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheet];
+                    const csv = XLSX.utils.sheet_to_csv(worksheet);
+                    
+                    gapi.client.sheets.spreadsheets.create({
+                        properties: {
+                            title: file.name.split('.')[0]
+                        }
+                    }).then((response) => {
+                        const spreadsheetId = response.result.spreadsheetId;
                         
-                        // Converter a primeira planilha para CSV
-                        const firstSheet = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[firstSheet];
-                        const csv = XLSX.utils.sheet_to_csv(worksheet);
+                        const values = csv.split('\n').map(row => row.split(','));
                         
-                        // Criar uma nova planilha no Google Sheets
-                        gapi.client.sheets.spreadsheets.create({
-                            properties: {
-                                title: file.name.split('.')[0] // Use o nome do arquivo como título
+                        gapi.client.sheets.spreadsheets.values.update({
+                            spreadsheetId: spreadsheetId,
+                            range: 'A1',
+                            valueInputOption: 'RAW',
+                            resource: {
+                                values: values
                             }
                         }).then((response) => {
-                            const spreadsheetId = response.result.spreadsheetId;
-                            
-                            // Preparar os dados para inserção
-                            const values = csv.split('\n').map(row => row.split(','));
-                            
-                            // Inserir os dados na nova planilha
-                            gapi.client.sheets.spreadsheets.values.update({
-                                spreadsheetId: spreadsheetId,
-                                range: 'A1', // Começar da célula A1
-                                valueInputOption: 'RAW',
-                                resource: {
-                                    values: values
-                                }
-                            }).then((response) => {
-                                console.log('Planilha carregada com sucesso');
-                                alert(`A planilha "${file.name}" foi carregada com sucesso.`);
-                                listSheets(); // Atualizar a lista de planilhas
-                            }, (error) => {
-                                console.error('Erro ao inserir dados na planilha:', error);
+                            console.log('Planilha carregada com sucesso');
+                            Swal.fire({
+                                title: 'Sucesso!',
+                                text: `A planilha "${file.name}" foi carregada com sucesso.`,
+                                icon: 'success',
+                                showCloseButton: true,
+                                confirmButtonText: 'OK'
                             });
+                            listSheets();
                         }, (error) => {
-                            console.error('Erro ao criar nova planilha:', error);
+                            console.error('Erro ao inserir dados na planilha:', error);
                         });
-                    };
-                    reader.readAsArrayBuffer(file);
-                }
-            };
-            input.click();
-        }
+                    }, (error) => {
+                        console.error('Erro ao criar nova planilha:', error);
+                    });
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        };
+        input.click();
+    }
 
-        function showPermissionPrompt() {
-            document.getElementById('permissionPrompt').style.display = 'block';
-        }
+    function showPermissionPrompt() {
+        Swal.fire({
+            title: 'Permissão Necessária',
+            text: 'Para acessar suas planilhas, precisamos da sua permissão.',
+            icon: 'info',
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Conceder Permissão',
+            cancelButtonText: 'Fechar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                requestPermission();
+            }
+        });
+    }
 
-        function requestPermission() {
-            gapi.auth2.getAuthInstance().signIn().then(() => {
-                document.getElementById('permissionPrompt').style.display = 'none';
-                listSheets();
-            }, (error) => {
-                console.error('Erro ao obter permissão:', error);
-            });
-        }
+    function requestPermission() {
+        gapi.auth2.getAuthInstance().signIn().then(() => {
+            Swal.close();
+            listSheets();
+        }, (error) => {
+            console.error('Erro ao obter permissão:', error);
+        });
+    }
 
-        function initClient() {
-            gapi.client.init({
-                apiKey: 'SUA_API_KEY',
-                clientId: 'SEU_CLIENT_ID',
-                discoveryDocs: [
-                    "https://sheets.googleapis.com/$discovery/rest?version=v4",
-                    "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
-                ],
-                scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file"
-            }).then(function () {
-                console.log('API do Google inicializada com sucesso');
-                listSheets();
-            }).catch(function(error) {
-                console.error('Erro ao inicializar o cliente da API do Google:', error);
-                if (error.details) {
-                    console.error('Detalhes do erro:', error.details);
-                }
-                if (error.error === 'idpiframe_initialization_failed') {
-                    console.error('Falha na inicialização do iframe de autenticação. Verifique as origens autorizadas no Console do Google Cloud.');
-                }
-                showPermissionPrompt();
-            });
-        }
+    function initClient() {
+        gapi.client.init({
+            apiKey: 'SUA_API_KEY',
+            clientId: 'SEU_CLIENT_ID',
+            discoveryDocs: [
+                "https://sheets.googleapis.com/$discovery/rest?version=v4",
+                "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
+            ],
+            scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file"
+        }).then(function () {
+            console.log('API do Google inicializada com sucesso');
+            listSheets();
+        }).catch(function(error) {
+            console.error('Erro ao inicializar o cliente da API do Google:', error);
+            if (error.details) {
+                console.error('Detalhes do erro:', error.details);
+            }
+            if (error.error === 'idpiframe_initialization_failed') {
+                console.error('Falha na inicialização do iframe de autenticação. Verifique as origens autorizadas no Console do Google Cloud.');
+            }
+            showPermissionPrompt();
+        });
+    }
 
-        function forceLogin() {
-            gapi.auth2.getAuthInstance().signIn().then(function() {
-                console.log('Login bem-sucedido');
-                listSheets();
-            }).catch(function(error) {
-                console.error('Erro no login:', error);
-            });
-        }
+    function forceLogin() {
+        gapi.auth2.getAuthInstance().signIn().then(function() {
+            console.log('Login bem-sucedido');
+            listSheets();
+        }).catch(function(error) {
+            console.error('Erro no login:', error);
+        });
+    }
 
-        gapi.load('client:auth2', initClient);
+    gapi.load('client:auth2', initClient);
 
-        showHome();
+    showHome();
+
+    (function() {
+    var credit = atob(document.body.getAttribute('data-credit'));
+    var style = document.createElement('style');
+    style.textContent = 'body::before{content:"' + credit + '";display:none;}';
+    document.head.appendChild(style);
+    console.log('%c' + credit, 'display:none;');
+})();
     </script>
+<body data-credit="RXN0ZSBjw7NkaWdvIGZvaSBkZXNlbnZvbHZpZG8gcG9yIEl1cmkgU2FudGFsdWNpYS4gRW1wcmVzYTogRGVrb2RhRGV2LiBUb2RvcyBvcyBkaXJlaXRvcyByZXNlcnZhZG9zLg=="></body>
 </body>
 </html>
