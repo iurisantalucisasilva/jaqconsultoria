@@ -665,29 +665,29 @@
     }
 
     function initClient() {
-        gapi.client.init({
-            apiKey: 'SUA_API_KEY',
-            clientId: 'SEU_CLIENT_ID',
-            discoveryDocs: [
-                "https://sheets.googleapis.com/$discovery/rest?version=v4",
-                "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
-            ],
-            scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file"
-        }).then(function () {
-            console.log('API do Google inicializada com sucesso');
-            listSheets();
-        }).catch(function(error) {
-            console.error('Erro ao inicializar o cliente da API do Google:', error);
-            if (error.details) {
-                console.error('Detalhes do erro:', error.details);
-            }
-            if (error.error === 'idpiframe_initialization_failed') {
-                console.error('Falha na inicialização do iframe de autenticação. Verifique as origens autorizadas no Console do Google Cloud.');
-            }
-            showPermissionPrompt();
-        });
-    }
-
+    gapi.client.init({
+        apiKey: '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',
+        clientId: '561351558825-08igu1ikqpgipssn20d2mkjc992hhucr.apps.googleusercontent.com',
+        discoveryDocs: [
+            "https://sheets.googleapis.com/$discovery/rest?version=v4",
+            "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
+        ],
+        scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
+        redirect_uri: "https://iurisantalucisasilva.github.io/jaqconsultoria"
+    }).then(function () {
+        console.log('API do Google inicializada com sucesso');
+        listSheets();
+    }).catch(function(error) {
+        console.error('Erro ao inicializar o cliente da API do Google:', error);
+        if (error.details) {
+            console.error('Detalhes do erro:', error.details);
+        }
+        if (error.error === 'idpiframe_initialization_failed') {
+            console.error('Falha na inicialização do iframe de autenticação. Verifique as origens autorizadas no Console do Google Cloud.');
+        }
+        showPermissionPrompt();
+    });
+}
     function forceLogin() {
         gapi.auth2.getAuthInstance().signIn().then(function() {
             console.log('Login bem-sucedido');
